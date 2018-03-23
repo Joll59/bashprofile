@@ -44,7 +44,7 @@
   # A handy function to open your bash profile from any directory
 function bp {
     $EDITOR ~/.bash_profile
-  }
+  }  
 # Environment Variables
 # =====================
   # Library Paths
@@ -345,7 +345,8 @@ function extract () {
   alias gba="git branch -a"
   alias gcam="git commit -am"
   alias gbb="git branch -b"
-
+  alias gitgetlines="git ls-files | xargs cat | wc -l" 
+    
   #Pairs for classes: Currently 060517
   eval $(/usr/libexec/path_helper -s)
   alias get_pairs='python3 /Users/flatironschool/Development/pseudo_smart_random_pairing/smart_assign.py'
