@@ -43,8 +43,8 @@
   # And that's why it's good to keep your dotfiles in git too.
   # A handy function to open your bash profile from any directory
 function bp {
-    $EDITOR ~/.bash_profile
-  }  
+    $EDITOR ~/.bashrc
+  }
 # Environment Variables
 # =====================
   # Library Paths
@@ -69,14 +69,14 @@ function bp {
     # Editors
     # Tells your shell that when a program requires various editors, use sublime.
     # The -w flag tells your shell to wait until sublime exits
-    export VISUAL="atom-beta"
-    export SVN_EDITOR="atom-beta"
-    export GIT_EDITOR="atom-beta"
-    export EDITOR="atom-beta"
+    export VISUAL="code-insiders"
+    export SVN_EDITOR="code-insiders"
+    export GIT_EDITOR="code-insiders"
+    export EDITOR="code-insiders"
 
     # Version
-    # What version of the Flatiron School bash profile this is
-    export FLATIRON_VERSION='1.1.1'
+    # What version of this bash profile this is
+    export BASH_PROFILE_VERSION='1.5.1'
   # Paths
 
     # The USR_PATHS variable will just store all relevant /usr paths for easier usage
@@ -181,47 +181,47 @@ function psg {
 # cdf:  'Cd's to frontmost window of MacOS Finder
 #   ------------------------------------------------------
 cdf () {
-     currFolderPath=$( /usr/bin/osascript <<EOT
-         tell application "Finder"
-             try
-         set currFolder to (folder of the front window as alias)
-             on error
-         set currFolder to (path to desktop folder as alias)
-             end try
-             POSIX path of currFolder
-         end tell
+    currFolderPath=$( /usr/bin/osascript <<EOT
+        tell application "Finder"
+            try
+        set currFolder to (folder of the front window as alias)
+            on error
+        set currFolder to (path to desktop folder as alias)
+            end try
+            POSIX path of currFolder
+        end tell
 EOT
-     )
-     echo "cd to \"$currFolderPath\""
-     cd "$currFolderPath"
- }
+    )
+    echo "cd to \"$currFolderPath\""
+    cd "$currFolderPath"
+}
 
- #   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
- #           displays paginated result with colored search terms and two lines surrounding each hit.
- #    Example: mans mplayer codec
- #   --------------------------------------------------------------------
-  mans () {
-         man $1 | grep -iC2 --color=always $2 | less
-     }
+#   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
+#           displays paginated result with colored search terms and two lines surrounding each hit.
+#    Example: mans mplayer codec
+#   --------------------------------------------------------------------
+mans () {
+        man $1 | grep -iC2 --color=always $2 | less
+    }
 
- #   showa: to remind yourself of an alias (given some part of it)
- #   ------------------------------------------------------------
-  showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
+#   showa: to remind yourself of an alias (given some part of it)
+#   ------------------------------------------------------------
+showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
 
 
-     #   ---------------------------
-     #   SEARCHING
-     #   ---------------------------
+    #   ---------------------------
+    #   SEARCHING
+    #   ---------------------------
 
-    alias fhere="find . -name "                 # fhere:    Quickly search for file in current directory
-    ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
-    ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
-    ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
+  alias fhere="find . -name "                 # fhere:    Quickly search for file in current directory
+  ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
+  ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
+  ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 
-    alias histg="history | grep"
+  alias histg="history | grep"
 
-     #   spotlight: Search for a file using MacOS Spotlight's metadata
-     #   -----------------------------------------------------------
+    #   spotlight: Search for a file using MacOS Spotlight's metadata
+    #   -----------------------------------------------------------
     spotlight () { mdfind "kMDItemDisplayName == '$@'wc"; }
 
     #   ---------------------------
@@ -345,11 +345,12 @@ function extract () {
   alias gba="git branch -a"
   alias gcam="git commit -am"
   alias gbb="git branch -b"
-  alias gitgetlines="git ls-files | xargs cat | wc -l" 
-    
+  alias gitgetlines="git ls-files | xargs cat | wc -l"
+
+
   #Pairs for classes: Currently 060517
-  eval $(/usr/libexec/path_helper -s)
-  alias get_pairs='python3 /Users/flatironschool/Development/pseudo_smart_random_pairing/smart_assign.py'
+  # eval $(/usr/libexec/path_helper -s)
+  # alias get_pairs='python3 /Users/flatironschool/Development/pseudo_smart_random_pairing/smart_assign.py'
 
   # RSPEC
   alias tspec="rspec --f-f"
@@ -359,6 +360,25 @@ function extract () {
   # alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 # Case-Insensitive Auto Completion
   bind "set completion-ignore-case on"
+
+
+function ramsay () {
+  eval $(ssh-agent -s) && ssh-add ~/.ssh/ramsey
+  trap 'ssh-agent -k; exit' 0
+}
+
+# function startRamsayAgent () {
+#   ps -u $(whoami) | grep ssh-agent &> /dev/null
+# if [ $? -ne 0 ];then
+#     eval $(ssh-agent -s)
+#     ssh-add ~/.ssh/ramsey
+#     echo "export SSH_AGENT_PID=$SSH_AGENT_PID" > ~/.agent-profile
+#     echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> ~/.agent-profile
+# else
+#     source ~/.agent-profile
+# fi
+# trap 'ssh-agent -k; exit' 0
+# }
 
 # Tiny Care Terminal settings
 export TTC_BOTS='tinycarebot,selfcare_bot,magicrealismbot'
