@@ -1,15 +1,26 @@
-﻿"Loading custom PowerShell environment..."
+﻿## https://gist.github.com/jchandra74/5b0c94385175c7a8d1cb39bc5157365e
+## Most of below is Inspired by what is found at the link above, if not mostly directly copied from it.
+
+"Loading custom PowerShell environment..."
+# start bench marking profile loading time. Naive? probably.
 $startTime = Get-Date
 ## LOAD External Files
 ### Functions
-$CustomFunctions="C:\Users\ablajide\OneDrive - Microsoft\PowerShell\CustomFunctions.ps1"
-$OSSFunctions="C:\Users\ablajide\OneDrive - Microsoft\PowerShell\OSSFunctions.ps1"
-$DenoCompletion="C:\Users\ablajide\OneDrive - Microsoft\PowerShell\DenoCompletion.ps1"
-## prompt (view)
-$prompt="C:\Users\ablajide\OneDrive - Microsoft\PowerShell\view.ps1"
+$CustomFunctions=Join-Path $PSScriptRoot  "CustomFunctions.ps1"
+$OSSFunctions=Join-Path $PSScriptRoot  "OSSFunctions.ps1"
+### A view/ prompt
+$prompt=Join-Path $PSScriptRoot  "view.ps1"
+## You need Deno installed, to you run deno completions.
+$DenoCompletion=Join-Path $PSScriptRoot  "DenoCompletion.ps1"
+## this logic should be ran for each of the import steps. WIP*
+if (Test-Path($DenoCompletion)) {
+    Import-Module "$DenoCompletion"
+}
+# loop over this array and run the Test-Path logic and import if the file is found at path
+$FilesToImport= [$CustomFunctions,$OSSFunctions,$prompt,$DenoCompletion]
 
-## Other View Option is oh-my-posh
-# Ensure oh-my-posh is loaded, to install oh-my-posh, Install-Module -Name oh-my-posh
+# Other view option is to use oh-my-posh comment out the $prompt above.
+# Ensure oh-my-posh is loaded, to install oh-my-posh: Install-Module -Name oh-my-posh
 # Import-Module -Name oh-my-posh
 
 # Default the prompt to darkblood oh-my-posh theme
@@ -29,8 +40,7 @@ if (Test-Path($ChocolateyProfile)) {
     Import-Module "$ChocolateyProfile"
 }
 
-
-## https://gist.github.com/jchandra74/5b0c94385175c7a8d1cb39bc5157365e
+# https://github.com/joonro/Get-ChildItemColor
 # Ensure that Get-ChildItemColor is loaded
 Import-Module Get-ChildItemColor
 
@@ -39,14 +49,14 @@ Set-Alias l Get-ChildItemColor -Option AllScope
 Set-Alias ls Get-ChildItemColorFormatWide -Option AllScope
 
 # Import-Module 'C:\tools\poshgit\dahlbyk-posh-git-4184928\src\posh-git.psd1'
-# Ensure posh-git is loaded, to Install posh-git Instal-Module -Name posh-git
+# Ensure posh-git is loaded, to Install posh-git Install-Module -Name posh-git
 Import-Module -Name posh-git
 
 # Might Need this if you are using github as your remote git repository
 # Start SshAgent if not already
-# if (! (Get-Process | Where-Object { $_.Name -eq 'ssh-agent'})) {
-#     Start-SshAgent
-# }
+if (! (Get-Process | Where-Object { $_.Name -eq 'ssh-agent'})) {
+    Start-SshAgent
+}
 
 
 
